@@ -1,14 +1,15 @@
-require("dotenv").config();
+require('dotenv').config();
+var fs = require('fs');
+var request = require('request')
+var keys = require('./keys.js');
 
-var keys = require("./keys.js");
-var fs = require("fs");
 var Spotify = require('node-spotify-api');
-var Spotify = new Spotify(keys.spotify);
+var Twitter = require('twitter');
+var omdb = require('omdb');
+
+var spotify = new Spotify(keys.spotify);
 var client = new Twitter(keys.twitter);
 
-
-
-console.log("Hello");
 
 //Make it so liri.js can take in one of the following commands:
 // * `my-tweets`
@@ -35,19 +36,36 @@ switch (action) {
     case "do-what-it-says":
       doWhatItSays();
       break;
-    }
+    };
 
-
-function myTweets() {
-    console.log()
 // 1. `node liri.js my-tweets`
 //    * This will show your last 20 tweets and when they were created at in your terminal/bash window.
+function myTweets() {
+  var params = { screen_name: 'cinemarkkk' };
+    client.get('statuses/user_timeline', params, function(error, tweets, response) {
+      if (error) {
+        console.log('Sorry, tweets are not working!');
+      } else {
+        for (var i = tweets.length-1; i > 0; i--) {
+        console.log('Here are my latest tweets: ' + tweets[i].text);
+        };
+      };
+      console.log("===========");
+    });
+  
 
-};
+function spotifyThisSong(trackName) { 
+  var trackName = process.argv[3];
+  if (!trackName) {
+    trackName = "The Sign";
+  };
+  
+var params = {
+  type: 'track', 
+  query: songTitle 
+  }; 
+    
 
-function spotifyThisSong() {
-
-};
 
 // 2. `node liri.js spotify-this-song '<song name here>'`
 
@@ -121,4 +139,4 @@ function doWhatItSays (){
 
 // * Do not overwrite your file each time you run a command.
 
-
+}}
