@@ -84,88 +84,42 @@ function spotifyThisSong() {
 	})
 };
     
-
-  
-//     if  {
-//         var songName = "";
-
-//         for (var i = 3; i < process.argv.length; i++) {
-//             if (i > 3 && i < process.argv.length) {
-//                 songName = songName + "+" + process.argv[i];
-//             } else {
-//                 songName += process.argv[i];
-//             }
-//         }
-
-        
-//     }
-// }
-
-
-// 2. `node liri.js spotify-this-song '<song name here>'`
-
-
-//    * If no song is provided then your program will default to "The Sign" by Ace of Base.
-   
-//    * You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
    
 
 
 
-// function movieThis() {
+function movieThis() {
 
-//   var omdb = require('omdb');
-//   // var movieName = "";
+  var omdb = require('omdb');
+	var queryURL = 'http://www.omdbapi.com/?t='+ value +'&plot=short&apikey=trilogy';
 
-// 	var request = 'http://www.omdbapi.com/?t='+ movieName +'&plot=full';
+	request(queryURL, function (error, response, body) {
+		if(error){
+		  console.log('There is an error:', error);
+		} else {
+			// console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+			// console.log(body); 
+			var requestObject = JSON.parse(body);
+			console.log(
+				'Movie Title: ', requestObject.Title +
+				'\nMovie Year: ', requestObject.Year +
+				'\nMovie imdbRating: ', requestObject.imdbRating +
+				'\nMovie Rating: ', requestObject.Ratings[1].Source, requestObject.Ratings[1].Value +
+				'\nMovie Country: ', requestObject.Country +
+				'\nMovie Language: ', requestObject.Language +
+				'\nMovie Plot: ', requestObject.Plot+
+				'\nMovie Actors: ', requestObject.Actors+
+				'\nMovie Url: ', requestObject.Website
+			)}
+	});
 
-// 	this.request(request, function (error, response, body) {
-// 		if(error){
-// 		  console.log('error:', error); // Print the error if one occurred 
-// 		}else{
-// 			// console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-// 			// console.log(body); 
-// 			var requestObject = JSON.parse(body);
-// 			console.log('Movie Title: ', requestObject.Title );
-// 			console.log('Movie imdbRating: ', requestObject.imdbRating);
-// 			console.log('Movie Year: ', requestObject.Year);
-// 			console.log('Movie Country: ', requestObject.Country);
-// 			console.log('Movie Language: ', requestObject.Language);
-// 			console.log('Movie Plot: ', requestObject.Plot);
-// 			console.log('Movie Actors: ', requestObject.Actors);
-// 			console.log('Movie RottenTotmatesRating: ', requestObject.Ratings[1].Source, requestObject.Ratings[1].Value);
-// 			console.log('Movie Url: ', requestObject.Website); 
-// 		}
-// 	});
-
-// };
-
+};
 
 
-
-
-
-
-// 3. `node liri.js movie-this '<movie name here>'`
-
-//    * This will output the following information to your terminal/bash window:
-
-//      ```
-//        * Title of the movie.
-//        * Year the movie came out.
-//        * IMDB Rating of the movie.
-//        * Rotten Tomatoes Rating of the movie.
-//        * Country where the movie was produced.
-//        * Language of the movie.
-//        * Plot of the movie.
-//        * Actors in the movie.
-//      ```
 
 //    * If the user doesn't type a movie in, the program will output data for the movie 'Mr. Nobody.'
      
-//      * If you haven't watched "Mr. Nobody," then you should: <http://www.imdb.com/title/tt0485947/>
-     
-//      * It's on Netflix!
+
    
 //    * You'll use the request package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
 
