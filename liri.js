@@ -3,13 +3,6 @@ var fs = require('fs');
 var request = require('request')
 var keys = require('./keys.js');
 
-var Spotify = require('node-spotify-api');
-var Twitter = require('twitter');
-var omdb = require('omdb');
-
-var spotify = new Spotify(keys.spotify);
-var client = new Twitter(keys.twitter);
-
 
 //Make it so liri.js can take in one of the following commands:
 // * `my-tweets`
@@ -18,7 +11,7 @@ var client = new Twitter(keys.twitter);
 // * `do-what-it-says`
 
 var action = process.argv[2];
-var value = process.argv[3];
+var value = process.argv.slice(3).join(" ");
 
 switch (action) {
     case "my-tweets":
@@ -40,61 +33,119 @@ switch (action) {
 
 // 1. `node liri.js my-tweets`
 //    * This will show your last 20 tweets and when they were created at in your terminal/bash window.
+
 function myTweets() {
-  var params = { screen_name: 'cinemarkkk' };
+  var Twitter = require('twitter');
+  var client = new Twitter(keys.twitter);
+
+  var params = { 
+    screen_name: 'cinemarkkk',
+    count: 20
+  };
+
     client.get('statuses/user_timeline', params, function(error, tweets, response) {
       if (error) {
         console.log('Sorry, tweets are not working!');
       } else {
         for (var i = tweets.length-1; i > 0; i--) {
-        console.log('Here are my latest tweets: ' + tweets[i].text);
+        console.log(tweets[i].text);
+        console.log(tweets[i].created_at)
+        console.log("===========");
         };
       };
-      console.log("===========");
+      
     });
-  
+	};  
 
-function spotifyThisSong(trackName) { 
-  var trackName = process.argv[3];
-  if (!trackName) {
-    trackName = "The Sign";
-  };
-  
-var params = {
-  type: 'track', 
-  query: songTitle 
-  }; 
+
+function spotifyThisSong() { 
+  var Spotify = require("node-spotify-api");
+	var spotify = new Spotify(keys.spotify);
+
+	var params = {
+		type: 'track', 
+		query: value, 
+		limit: 1 
+	};
+	
+	spotify.search (params, function (err, data) {
+		if (err) {
+			return console.log("Error searching for song: " + err);
+		} else {
+			//console.log(data);
+			var track = data.tracks.items;
+			console.log(
+					"Song: " + track[0].name +
+					"\nArtist: " + track[0].artists[0].name +
+					"\nURL: " + track[0].preview_url +
+					"\nAlbum: " + track[0].album.name
+			)
+		}
+	})
+};
     
+
+  
+//     if  {
+//         var songName = "";
+
+//         for (var i = 3; i < process.argv.length; i++) {
+//             if (i > 3 && i < process.argv.length) {
+//                 songName = songName + "+" + process.argv[i];
+//             } else {
+//                 songName += process.argv[i];
+//             }
+//         }
+
+        
+//     }
+// }
 
 
 // 2. `node liri.js spotify-this-song '<song name here>'`
 
-//    * This will show the following information about the song in your terminal/bash window
-     
-//      * Artist(s)
-     
-//      * The song's name
-     
-//      * A preview link of the song from Spotify
-     
-//      * The album that the song is from
 
 //    * If no song is provided then your program will default to "The Sign" by Ace of Base.
    
 //    * You will utilize the [node-spotify-api](https://www.npmjs.com/package/node-spotify-api) package in order to retrieve song information from the Spotify API.
    
-//    * Like the Twitter API, the Spotify API requires you sign up as a developer to generate the necessary credentials. You can follow these steps in order to generate a **client id** and **client secret**:
 
-//    * Step One: Visit <https://developer.spotify.com/my-applications/#!/>
-   
-//    * Step Two: Either login to your existing Spotify account or create a new one (a free account is fine) and log in.
 
-//    * Step Three: Once logged in, navigate to <https://developer.spotify.com/my-applications/#!/applications/create> to register a new application to be used with the Spotify API. You can fill in whatever you'd like for these fields. When finished, click the "complete" button.
 
-//    * Step Four: On the next screen, scroll down to where you see your client id and client secret. Copy these values down somewhere, you'll need them to use the Spotify API and the [node-spotify-api package](https://www.npmjs.com/package/node-spotify-api).
-function movieThis() {
+// function movieThis() {
 
-};
+//   var omdb = require('omdb');
+//   // var movieName = "";
+
+// 	var request = 'http://www.omdbapi.com/?t='+ movieName +'&plot=full';
+
+// 	this.request(request, function (error, response, body) {
+// 		if(error){
+// 		  console.log('error:', error); // Print the error if one occurred 
+// 		}else{
+// 			// console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+// 			// console.log(body); 
+// 			var requestObject = JSON.parse(body);
+// 			console.log('Movie Title: ', requestObject.Title );
+// 			console.log('Movie imdbRating: ', requestObject.imdbRating);
+// 			console.log('Movie Year: ', requestObject.Year);
+// 			console.log('Movie Country: ', requestObject.Country);
+// 			console.log('Movie Language: ', requestObject.Language);
+// 			console.log('Movie Plot: ', requestObject.Plot);
+// 			console.log('Movie Actors: ', requestObject.Actors);
+// 			console.log('Movie RottenTotmatesRating: ', requestObject.Ratings[1].Source, requestObject.Ratings[1].Value);
+// 			console.log('Movie Url: ', requestObject.Website); 
+// 		}
+// 	});
+
+// };
+
+
+
+
+
+
+
 // 3. `node liri.js movie-this '<movie name here>'`
 
 //    * This will output the following information to your terminal/bash window:
@@ -118,9 +169,17 @@ function movieThis() {
    
 //    * You'll use the request package to retrieve data from the OMDB API. Like all of the in-class activities, the OMDB API requires an API key. You may use `trilogy`.
 
-function doWhatItSays (){
 
-};
+
+
+
+// function doWhatItSays (){
+
+// };
+
+
+
+
 
 
 // 4. `node liri.js do-what-it-says`
@@ -138,5 +197,3 @@ function doWhatItSays (){
 // * Make sure you append each command you run to the `log.txt` file. 
 
 // * Do not overwrite your file each time you run a command.
-
-}}
