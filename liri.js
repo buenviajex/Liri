@@ -39,7 +39,7 @@ function myTweets() {
   var client = new Twitter(keys.twitter);
 
   var params = { 
-    screen_name: 'cinemarkkk',
+    screen_name: value,
     count: 20
   };
 
@@ -55,8 +55,7 @@ function myTweets() {
       };
       
     });
-	};  
-
+};  
 
 function spotifyThisSong() { 
   var Spotify = require("node-spotify-api");
@@ -84,10 +83,6 @@ function spotifyThisSong() {
 	})
 };
     
-   
-
-
-
 function movieThis() {
 
   var omdb = require('omdb');
@@ -127,9 +122,31 @@ function movieThis() {
 
 
 
-// function doWhatItSays (){
+function doWhatItSays (){
+	var fs = require('fs');
 
-// };
+	fs.readFile("random.txt", "utf8", function(error, data) {
+		if(error) {
+				console.log(error);
+		} 
+		var dataArr = data.split(",");
+		var action = dataArr[0];
+		var value = dataArr[1];
+		
+		if (action === "spotify-this-song") {
+			var songValue = value.slice(1, -1);
+			spotifyThisSong(songValue);
+		} else if (action === "my-tweets") {
+			var tweetValue = value.slice(1, -1);
+			myTweets(tweetValue);
+		} else if(action === "movie-this") {
+			var movieValue = value.slice(1, -1);
+			movieThis(movieValue);
+		} 
+	
+		}
+	})
+}
 
 
 
